@@ -21,9 +21,11 @@ class TestTaskDetails(unittest.TestCase):
         # self.driver = selenium_driver.SeleniumChrome(executable_path='../../chromedriver')
         self.driver = selenium_driver.SeleniumChrome()
         self.webpage = todopage.TodoPage(self.driver)
+        self.needs_logout = True
 
     def tearDown(self) -> None:
-        self.webpage.logout()
+        if self.needs_logout:
+            self.webpage.logout()
         self.driver.quit()
 
     def test_add_task(self):
@@ -110,3 +112,10 @@ class TestTaskDetails(unittest.TestCase):
         log.info("Step 4. Check task data is present on the web page")
         task_data_from_ui = self.webpage.get_task_info()
         data_checker.check_task_details(task_data_from_ui, self.title, self.tags, new_username, False)
+
+    def test_login_incorrect_password(self):
+        log.info("Step 1. Login with incorrect credentials")
+        self.webpage.login(self.username, "gibberish")
+
+        assert self.webpage.sign_out_button is None
+        self.needs_logout = False
