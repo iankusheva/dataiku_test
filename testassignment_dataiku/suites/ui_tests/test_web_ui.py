@@ -18,8 +18,8 @@ class TestTaskDetails(unittest.TestCase):
         self.api_helpers = requests_utils.AvailableAPIActions
         self.api_helpers.reset_db()
         # fix the path!
-        self.driver = selenium_driver.SeleniumChrome(executable_path='../../chromedriver')
-        # self.driver = selenium_driver.SeleniumChrome()
+        # self.driver = selenium_driver.SeleniumChrome(executable_path='../../chromedriver')
+        self.driver = selenium_driver.SeleniumChrome()
         self.webpage = todopage.TodoPage(self.driver)
 
     def tearDown(self) -> None:
