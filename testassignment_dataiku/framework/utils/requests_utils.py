@@ -33,9 +33,9 @@ class RequestsHelpers:
             raise
 
     @staticmethod
-    def put_request(url, data, verify, auth=None):
+    def put_request(url, data, verify, auth=None, headers=None):
         try:
-            rsp = requests.put(url, data, auth=auth)
+            rsp = requests.put(url, data, auth=auth, headers=headers)
             if verify:
                 assert rsp.status_code == 200, "Unsuccessful put request, got response code {}".format(rsp.status_code)
             return rsp
@@ -82,6 +82,11 @@ class AvailableAPIActions:
         return rsp
 
     @staticmethod
+    def create_task_with_token(params, headers, verify=True):
+        rsp = RequestsHelpers.put_request(BASEURL, json.dumps(params), verify=verify, headers=headers)
+        return rsp
+
+    @staticmethod
     def get_task_description(task_id):
         return RequestsHelpers.get_request(urljoin(BASEURL, str(task_id)))
 
@@ -108,16 +113,20 @@ class AvailableAPIActions:
         return rsp
 
     @staticmethod
-    def authenticate(data):
-        return RequestsHelpers.post_request(urljoin(BASEURL, AUTH), data)
+    def authenticate(data, verify=True):
+        return RequestsHelpers.post_request(urljoin(BASEURL, AUTH), data, verify)
 
     @staticmethod
     def reset_db():
         RequestsHelpers.get_request(urljoin(BASEURL, RESET))
 
     @staticmethod
-    def construct_get_url():
-        return
+    def create_auth_headers(token):
+        return {'Authorization': 'Basic {}'.format(token)}
+
+    @staticmethod
+    def create_params_for_auth(username, password):
+        return {"username": username, "password": password}
 
     @staticmethod
     def create_params_for_task_creation(title, tags=None):
